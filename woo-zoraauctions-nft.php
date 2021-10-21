@@ -1,9 +1,9 @@
 <?php
 
 	/**
-	 * Plugin Name: Woocommerce NFT Plugin
+	 * Plugin Name: WooCommerce NFT Plugin
 	 * Plugin URI: https://art.haus
-	 * Description: Woocommerce plugin for NFT auctions using zora
+	 * Description: WooCommerce plugin for NFT auctions using zora
 	 * Version: 1.1.0
 	 * Author: ART HAUS
 	 * Author URI: https://art.haus
