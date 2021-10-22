@@ -2,29 +2,8 @@
 currentAccount = null;
 
 
-function handleAccountsChangedv2(accounts) {
-    
-    
-    if (accounts.length === 0) {
-        // console.log('Please connect to MetaMask.');
-        
-    } else if (accounts[0] !== currentAccount) {
 
-        currentAccount = accounts[0];
-        w3 = new Web3(window.ethereum);
-        jQuery('#_auction_fr_connect').css({'display' : 'none'});
-        if(currentAccount != null) {
-            // Set the button label
-            //jQuery('#enableMetamask').html(currentAccount)
-        }
-    }
-    
-}
 
-function connectHandlerv2() {
-    connectv2();
-    setInterval(connectv2, 1000);
-  }
 
   async function handleUI(){
   	let resp2 = await GetAuctionDetails2(nftData.auction);
@@ -74,31 +53,9 @@ function connectHandlerv2() {
 
   }
 
-  function connectv2() {
-    
-    ethereum
-      .request({ method: "eth_requestAccounts" })
-      .then(
-      	(accounts) => {
-      		handleAccountsChangedv2(accounts);
-      		
-      		//handleUI();
-      	}
-      	)
-      .catch((err) => {
-        if (err.code === 4001) {
-          // console.log("Please connect to MetaMask.");
-        } else {
-          // console.error(err);
-        }
-      });
-  }
-
-// connect wallet
 
 function getNormalizedURI(uri) {
 	if (uri.startsWith("ipfs://")) {
-	  //return uri.replace("ipfs://", "https://ipfs.io/ipfs/");
 	  return uri.replace("ipfs://","https://dweb.link/ipfs/");
 	}
 
@@ -118,6 +75,14 @@ async function GetData(){
 	// run code
 	let uri = await GetNftUri( nftData.token , nftData.tokenContract );
 	let _nft_data_url = getNormalizedURI(uri);
+	let n_url = _nft_data_url;
+	let vipf = document.getElementById("_eth_txn_view_on_ipfs");
+	let veth = document.getElementById("_eth_txn_etherscan");
+	veth.href = nftData.network_option.explorer_url+'tx/'+nftData.auctionTxn;
+	veth.target = "_blank"
+	vipf.href = n_url;
+	vipf.target = "_blank";
+	nftData.network_option.explorer_url+'tx/'
 	jQuery.getJSON(_nft_data_url, function( _data ){
 		let img_url = getNormalizedURI(_data.image);
 		jQuery('#main img.wp-post-image').attr('src', img_url);
@@ -148,7 +113,15 @@ function ShopProducts(){
 			GetNFTData( jQuery(__this).data('token'), jQuery(__this).data('tokencontract') ).then( function( _url ) {
 				console.log( _url );
 				console.log("setting");
-				jQuery.getJSON( getNormalizedURI(_url), function( _data ){
+				let n_url = getNormalizedURI(_url);
+				let vipf = document.getElementById("_eth_txn_view_on_ipfs");
+				let veth = document.getElementById("_eth_txn_etherscan");
+				veth.href = nftData.network_option.explorer_url+'tx/'+nftData.auctionTxn;
+				veth.target = "_blank"
+				vipf.href = n_url;
+				vipf.target = "_blank";
+				nftData.network_option.explorer_url+'tx/'
+				jQuery.getJSON(n_url , function( _data ){
 					if( jQuery(__this).find('img').length ){
 						let __img = jQuery(__this).find('img');
 						jQuery(__img).attr('src', getNormalizedURI(_data.image));
@@ -156,7 +129,6 @@ function ShopProducts(){
 					}
 					if( jQuery(__this).find('.woocommerce-loop-product__title').length ){
 						let __title = jQuery(__this).find('.woocommerce-loop-product__title');
-						// console.log(_data.name);
 						jQuery(__title).html(_data.name);
 					}
 				});
@@ -175,11 +147,8 @@ async function isDone(){
 }
 
 async function CheckBid(){
-	let aunctionDetails = await GetAuctionDetails2( nftData.auction );
-	//jQuery('#_auction_timing').css({ 'display': 'block' });
-	
+	let aunctionDetails = await GetAuctionDetails2( nftData.auction );	
 	if( aunctionDetails.firstBidTime === '0' && currentAccount != null ){
-		// show auction price
 		jQuery('#_auction_reserve_price h3').html(jQuery('#_auction_reserve_price h3').text().split(' ')[0] + " ETH")
 		jQuery('#_auction_reserve_price').css({ 'display': 'block' });
 		console.log("block here")
@@ -260,7 +229,6 @@ async function GetAuctionDetails2(auctionId){
 }
 
 function createBid(auctionId,amount){
-	// console.log( auctionId + '::' + amount );
 	let c = loadContract2(HouseAbi,nftData.network_option.contract_address);
 	c.methods.createBid(auctionId,Web3.utils.toWei(String(amount),'ether')).send(
 	{
@@ -310,11 +278,10 @@ async function loadHistory(){
 	}
 	
 	let _liHtml = '';
-		// console.log( res );
 		let tempres = res.reverse();
 		if( tempres.length ){
 			tempres.forEach( function( _elem, _index ) {
-				_liHtml += '<li> <a href="'+nftData.network_option.explorer_url+_elem.transactionHash+'">' + _elem.returnValues.sender + '</a> : ' + 
+				_liHtml += '<li> <a href="'+nftData.network_option.explorer_url+'tx/'+_elem.transactionHash+'" target="_blank">' + _elem.returnValues.sender + '</a> : ' + 
 				Web3.utils.fromWei(_elem.returnValues.value,'ether')  + '</li>';
 			} )
 		}else{
@@ -325,24 +292,17 @@ async function loadHistory(){
 		jQuery('#_action_history ul').html( _liHtml );
 }
 
-// date diff formater
 function timeBetweenDates(toDate,res) {
 	  var dateEntered = toDate;
 	  var now = new Date();
 	  var difference = dateEntered.getTime() - now.getTime();
 
 	  if (difference <= 0) {
-	  	//console.log('ended ??')
-	    // console.log('done');
 	    if (res.tokenOwner != "0x0000000000000000000000000000000000000000" && currentAccount && res.firstBidTime != "0"){
 	    	jQuery('#_auction_fr_end_auction').css('display','block');
             jQuery('#_auction_amount').css('display','none');
             jQuery('#_auction_fr_place_bid').css('display','none');
 	    }
-	    
-	    
-	    //jQuery('#_bidder_amount').css('display','none');
-	    
 	    return [0,0,0,0]
 
 	  } else {
@@ -350,23 +310,14 @@ function timeBetweenDates(toDate,res) {
 			jQuery("#_auction_amount").css("display","block");
 			jQuery("#_auction_amount_desc").css("display","block");
 		}
-	  	
-
 	    var seconds = Math.floor(difference / 1000);
 	    var minutes = Math.floor(seconds / 60);
 	    var hours = Math.floor(minutes / 60);
 	    var days = Math.floor(hours / 24);
-
 	    hours %= 24;
 	    minutes %= 60;
 	    seconds %= 60;
-
-			// console.log(days);
-	  //   	console.log(hours);
-			// console.log(minutes);
-			// console.log(seconds);
-			//jQuery('#_auction_fr_place_bid').css('display','block');
-			return [days,hours,minutes,seconds]
+		return [days,hours,minutes,seconds]
 
 	  }
 	}
@@ -376,7 +327,6 @@ function timeBetweenDates(toDate,res) {
 
 async function timerUpdate(){
 	let res = await GetAuctionDetails2(nftData.auction);
-	// console.log(res);
 	if (res.tokenOwner != "0x0000000000000000000000000000000000000000"){
 		jQuery('#__token__owner').html( res.tokenOwner );
 		jQuery('#__token__owner').attr('href', 'https://etherscan.io/address/' + res.tokenOwner)
@@ -406,25 +356,17 @@ async function timerUpdate(){
 		time = timeBetweenDates(d1,res);
 	}else if(res.firstBidTime == "0" && res.tokenOwner != "0x0000000000000000000000000000000000000000"){
 		let now = new Date();
-		//console.log(res);
 		let d1 = new Date(now.getTime() + (Number(res.duration) * 1000));
-		//console.log(d1);
 		time = timeBetweenDates(d1,res);
 		time[3] = 0
 	}else{
 		time = [0,0,0,0]
 	}
-	//console.log(time)
-	
 	jQuery('#_auction_timing').css({ 'display': 'block' });
 	jQuery('#_day').text(time[0]+"d");
 	jQuery('#_hours').text(time[1]+"h");
 	jQuery('#_mins').text(time[2]+"m");
 	jQuery('#_secs').text(time[3]+"s");
-	
-
-
-
 }
 
 async function Approve(){
@@ -433,7 +375,6 @@ async function Approve(){
 	if (res){
 		console.log(res);
 	}
-	
 }
 
 async function EndAuction(){
@@ -625,7 +566,6 @@ window.addEventListener("load", async function () {
 		jQuery("#_auction_amount").attr("placeholder", "Amount (5% more than current bid)");
 		setInterval(handleUI,1000);
     }else{
-      // console.log( "nothing found" );
     }
 
 });

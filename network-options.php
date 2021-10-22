@@ -37,7 +37,7 @@
 							</td>
 						</tr>
 						<tr valign="top">
-							<th scope="row"><label for="no_contract_address">Auction House Address</label></th>
+							<th scope="row"><label for="no_contract_address">Contract Address</label></th>
 							<td>
 								<input type="text" id="no_contract_address" name="no_contract_address" placeholder="Contract Address">
 							</td>

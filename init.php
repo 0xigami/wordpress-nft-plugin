@@ -90,7 +90,7 @@ function nf_auction_enqueue_scripts(){
 	            'tokenContract' => get_post_meta( $post->ID, '_token_contract', true ),
 	            'auction' => get_post_meta( $post->ID, '_auction_id', true ),
 	            'block' => get_post_meta( $post->ID, '_block_number', true ),
-	            // 'rpc' => get_option('nft_rinkeby_api_url', false),
+	            'auctionTxn' => get_post_meta( $post->ID, '_auction_txn', true ),
 	            'network_option' => $nft_network_options[$selectedNetworkKey]
 	        )
 	    );
@@ -379,6 +379,20 @@ function nft_auction_options_product_tab_content() {
 					)
 				);
 
+				woocommerce_wp_text_input(
+					array(
+						'id'          => '_auction_txn',
+						'label'       => __( 'Auction Creation Transaction', ABSZAN_TEXT_DOMAIN ),
+						'description' => __( '...', ABSZAN_TEXT_DOMAIN ),
+						'value'       => get_post_meta( $post->ID ,'_auction_txn', true),
+						'default'     => '',
+						'placeholder' => '',
+						'custom_attributes' => array(
+							'readonly' => 'readonly'
+						)
+					)
+				);
+
 			?>
 			<p class="form-field">
 				<div id="_auction_popup" class="_auction_popup overlay">
@@ -492,6 +506,7 @@ function save_nft_auction_field( $post_id ) {
 	$_block_number = isset( $_POST['_block_number'] ) ? sanitize_text_field( $_POST['_block_number'] ) : '';
 	$_owner = isset( $_POST['_owner'] ) ? sanitize_text_field( $_POST['_owner'] ) : '';
 	$_auction_status = isset( $_POST['_auction_status'] ) ? sanitize_text_field( $_POST['_auction_status'] ) : '';
+	$_auction_txn = isset( $_POST['_auction_txn'] ) ? sanitize_text_field( $_POST['_auction_txn'] ) : '';
 	
 
 	update_post_meta( $post_id, '_token_network', $_token_network );
@@ -514,6 +529,7 @@ function save_nft_auction_field( $post_id ) {
 	update_post_meta( $post_id, '_block_number', $_block_number );
 	update_post_meta( $post_id, '_owner', $_owner );
 	update_post_meta( $post_id, '_auction_status', $_auction_status );
+	update_post_meta( $post_id, '_auction_txn', $_auction_txn );
 
 }
 add_action( 'woocommerce_process_product_meta_nft_auction', 'save_nft_auction_field'  );
@@ -693,6 +709,17 @@ function nft_auction_product_front(){
 						margin-bottom: .7rem;
 						border-radius: 6px;
 					}
+					._eth_txn{
+						margin-top: 12px;
+					}
+					._eth_txn a{
+						display: inline-block;
+						text-decoration: underline;
+						color: #333;
+					}
+					._eth_txn a:not(:last-child){
+						margin-bottom: 5px;
+					}
 				</style>
 				<div id="_auction_popup" class="_auction_popup overlay">
 					<div class="_auction_popup_inner">
@@ -766,6 +793,11 @@ function nft_auction_product_front(){
 					<ul>
 						<!-- <li>No Bids Available</li> -->
 					</ul>
+				</div>
+
+				<div class="_eth_txn">
+					<a id="_eth_txn_etherscan" href="#">Etherscan transaction</a> <br>
+					<a id="_eth_txn_view_on_ipfs" href="#">View on IPFS</a>
 				</div>
 			</div>
 		<?php

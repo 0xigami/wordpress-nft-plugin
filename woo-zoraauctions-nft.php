@@ -1,10 +1,10 @@
 <?php
 
 	/**
-	 * Plugin Name: WooCommerce NFT Plugin
+	 * Plugin Name: ART HAUS NFT for WooCommerce
 	 * Plugin URI: https://art.haus
 	 * Description: WooCommerce plugin for NFT auctions using zora
-	 * Version: 1.1.0
+	 * Version: 1.2.0
 	 * Author: ART HAUS
 	 * Author URI: https://art.haus
 	 * Text domain: arthaus_nft_plugin
@@ -12,7 +12,7 @@
 
 
 	define( 'ABSZAN_TEXT_DOMAIN', 'arthaus_nft_plugin');
-	define( 'ABSZAN_VERSION', '1.1.0' ); // WRCS: DEFINED_VERSION.
+	define( 'ABSZAN_VERSION', '1.2.0' ); // WRCS: DEFINED_VERSION.
 	define( 'ABSZAN_FILE', __FILE__ );
 	define( 'ABSZAN_URL', plugins_url( '', __FILE__ ) );
 	define( 'ABSZAN_DIR', plugin_dir_path( __FILE__ ) );

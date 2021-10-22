@@ -1,34 +1,4 @@
-function handleAccountsChanged(accounts) {
-  if (accounts.length === 0) {
-    console.log("Please connect to MetaMask.");
-    jQuery("#enableMetamask").html("Connect with Metamask");
-  } else if (accounts[0] !== currentAccount) {
-    currentAccount = accounts[0];
-    jQuery("#connect-btn").css("display", "none");
 
-    jQuery("#nftauction_type_product_options").css("display", "block");
-
-    if (jQuery("#approve").length > 0) {
-      jQuery("#approve").css("display", "inline-block");
-      let btn = jQuery("#auction-create")[0];
-      let btn2 = jQuery("#approve")[0];
-      btn2.addEventListener("click", Approve);
-      btn.addEventListener("click", createAuctionHandler);
-    }
-
-    if (jQuery("#auction-cancel").length > 0) {
-      let btn = jQuery("#auction-cancel")[0];
-      btn.addEventListener("click", cancelZoraAuction);
-    }
-
-    w3 = new Web3(window.ethereum);
-    if (currentAccount != null) {
-      // Set the button label
-      jQuery("#enableMetamask").html(currentAccount);
-      document.getElementById("_owner").value = currentAccount;
-    }
-  }
-}
 
 // using this
 
@@ -66,11 +36,6 @@ function createAuctionHandler() {
     alert("starting");
     let tokId = jQuery("#_token_id")[0].value;
     let tokC = jQuery("#_token_contract")[0].value;
-    //let duration = jQuery('#_auction_duration')[0].value;
-    //let day = jQuery('#_auction_duration_day')[0].value;
-    //let hours = jQuery('#_auction_duration_hours')[0].value;
-    //let minutes = jQuery('#_auction_duration_minutes')[0].value;
-    //let seconds = jQuery('#_auction_duration_seconds')[0].value;
     let reserve = jQuery("#_reserve_price")[0].value;
     let curator = jQuery("#_curator")[0].value;
     let fee = jQuery("#_curator_fee_percent")[0].value;
@@ -114,14 +79,9 @@ function createAuctionHandler() {
         document.getElementById("_auction_id").value =
           res.events.AuctionCreated.returnValues.auctionId;
         document.getElementById("_block_number").value = res.blockNumber;
+        document.getElementById("_auction_txn").value = res.events.AuctionCreated.transactionHash;
       });
 
-    /* c.AuctionCreated(function(error,result){
-          alert('even triggered');
-          console.log(result);
-      }) */
-
-    /* c.getPastEvents('AuctionCreated', {}).then(res => console.log(res)); */
   }
 }
 
@@ -190,40 +150,6 @@ function approve_validations() {
 }
 
 function create_validations() {
-  /* if( jQuery('#_auction_duration_day').val() == '' || jQuery('#_auction_duration_day').val() == null ){
-      jQuery('#_auction_duration_day').css({ 'border': 'solid 1px #ff0000' });
-      jQuery('html, body').animate({
-        scrollTop: jQuery("#nft_auction_options").offset().top
-      }, 2000);
-      return false;
-    }
-    if( jQuery('#_auction_duration_hours').val() == '' || jQuery('#_auction_duration_hours').val() == null ){
-      jQuery('#_auction_duration_hours').css({ 'border': 'solid 1px #ff0000' });
-      jQuery('html, body').animate({
-        scrollTop: jQuery("#nft_auction_options").offset().top
-      }, 2000);
-      return false;
-    }
-    if( jQuery('#_auction_duration_minutes').val() == '' || jQuery('#_auction_duration_minutes').val() == null ){
-      jQuery('#_auction_duration_minutes').css({ 'border': 'solid 1px #ff0000' });
-      jQuery('html, body').animate({
-        scrollTop: jQuery("#nft_auction_options").offset().top
-      }, 2000);
-      return false;
-    } */
-  /* if (
-    jQuery("#_auction_duration_seconds").val() == "" ||
-    jQuery("#_auction_duration_seconds").val() == null
-  ) {
-    jQuery("#_auction_duration_seconds").css({ border: "solid 1px #ff0000" });
-    jQuery("html, body").animate(
-      {
-        scrollTop: jQuery("#nft_auction_options").offset().top,
-      },
-      2000
-    );
-    return false;
-  } */
   if (
     jQuery("#_reserve_price").val() == "" ||
     jQuery("#_reserve_price").val() == null
@@ -252,24 +178,6 @@ function create_validations() {
   }
 
   return true;
-}
-
-function connectHandler() {
-  connect();
-  setInterval(connect, 1000);
-}
-
-function connect() {
-  ethereum
-    .request({ method: "eth_requestAccounts" })
-    .then(handleAccountsChanged)
-    .catch((err) => {
-      if (err.code === 4001) {
-        console.log("Please connect to MetaMask.");
-      } else {
-        console.error(err);
-      }
-    });
 }
 
 function test(event) {
@@ -360,20 +268,7 @@ async function setNetwork(){
   const Fortmatic = window.Fortmatic;
   const evmChains = window.evmChains;
   let v = document.getElementById("_token_network").value;
-  
   console.log(v);
-
-    /* if (provider.close) {
-      await provider.close();
-
-      // If the cached provider is not cleared,
-      // WalletConnect will default to the existing session
-      // and does not allow to re-scan the QR code with a new wallet.
-      // Depending on your use case you may want or want not his behavir.
-      await web3Modal.clearCachedProvider();
-      provider = null;
-    } */
-    
     let network_options =  Object.values(nftData.network_options);
     let cont = network_options.filter((e) => Number(e.chain_id) == Number(v))[0]
     let opt = {}
