@@ -19,7 +19,7 @@ Once the plugin is installed and activated you will find a new Product Type avai
 
 ### Installing the Plugin
 
-1. [Download ZIP](https://github.com/artdothaus/nft-auction-wordpress-plugin-woocommerce/archive/refs/heads/main.zip) of this repo
+1. [Download ZIP](https://github.com/artdothaus/wordpress-nft-plugin/archive/refs/heads/main.zip) of this repo
 2. Login to your WordPress admin
 3. Visit Plugins > Add New > Upload
 4. "Choose file" and select ZIP downloaded
